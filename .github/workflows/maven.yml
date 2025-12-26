@@ -15,16 +15,17 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.SPRING_BOOT_KEY }}" > ~/.ssh/id_rsa
         chmod 400 ~/.ssh/id_rsa
-        ssh-keyscan ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+        ssh-keyscan ${{ secrets.HOST }} >> ~/.ssh/my-app
         chmod 600 ~/.ssh/known_hosts
         
     - name: Build & Test
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.HOST }} '
-          cd myhome &&
+          ls
+          cd deploy-test &&
           git pull &&
           ./mvnw clean package &&
-          sudo cp target/shortenurlservice-0.0.1-SNAPSHOT.jar /var/myhome/shortenurlservice.jar
+          sudo cp target/shortenurlservice-0.0.1-SNAPSHOT.jar /var/deploy-test/shortenurlservice.jar
         '
     - name: Restart
       run: |
